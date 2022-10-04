@@ -24,7 +24,7 @@ const UserBox = styled(Box)({
   alignItems: 'center',
 })
 
-const Header = () => {
+const Header: React.FC = () => {
   return (
     <AppBar elevation={0} position='sticky'>
       <MyToolbar variant='dense'>

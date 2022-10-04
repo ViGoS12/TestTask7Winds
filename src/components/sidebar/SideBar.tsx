@@ -11,7 +11,7 @@ import {
 import { PRODJECTS } from '../../constants'
 import { useState } from 'react'
 
-const SideBar = () => {
+const SideBar: React.FC = () => {
   const [selectedIndex, setSelectedIndex] = useState(4)
 
   return (
