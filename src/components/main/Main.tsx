@@ -1,5 +1,8 @@
 import { Box, Divider, styled, Typography } from '@mui/material/'
 import MyTable from '../myTable'
+import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../redux/store'
 
 const HeaderProject = styled(Box)({
   backgroundColor: '#27272A',
@@ -8,6 +11,10 @@ const HeaderProject = styled(Box)({
 })
 
 const Main: React.FC = () => {
+  const dispatch = useDispatch()
+
+  const { rowData } = useSelector((state: RootState) => state.table)
+
   return (
     <Box bgcolor='#202124' flex={5}>
       <HeaderProject>
@@ -19,7 +26,7 @@ const Main: React.FC = () => {
 
       <Divider />
 
-      <MyTable />
+      <MyTable tableData={rowData} />
     </Box>
   )
 }
