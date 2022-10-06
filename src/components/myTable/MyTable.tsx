@@ -5,10 +5,12 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Box,
 } from '@mui/material/'
 
 import firstLevelIcon from '../../assets/svg/firstLevelIcon.svg'
 import secondLevelIcon from '../../assets/svg/secondLevelIcon.svg'
+import calcIcon from '../../assets/svg/calcIcon.svg'
 
 import { useState } from 'react'
 
@@ -26,7 +28,8 @@ const MyTable: React.FC<IMyTableProps> = ({ tableData }) => {
 
   const [rowIdForEdit, setRowIdForEdit] = useState<RowData['id'] | null>(null)
 
-  const seleectRowIdForEdit = (id: RowData['id']) => {
+  const [onCreation, setOnCreation] = useState(false)
+  const selectRowIdForEdit = (id: RowData['id']) => {
     setRowIdForEdit(id)
   }
 
@@ -37,22 +40,18 @@ const MyTable: React.FC<IMyTableProps> = ({ tableData }) => {
 
   const addNewRow = (row: RowData) => {
     dispatch(setNewRow(row))
+    setOnCreation(false)
   }
 
-  const createLevel = (type: RowData['type'], parent: RowData['parent']) => {
-    dispatch(
-      setNewRow({
-        title: '',
-        unit: '',
-        quantity: 0,
-        unitPrice: 0,
-        price: 0,
-        type: type,
-        parent: parent,
-      })
-    )
-    return <EditRow rowFunc={editRow} type={type} parent={parent} mode='edit' />
+  const createRow = (
+    id: RowData['id'],
+    parent: RowData['parent'],
+    type: RowData['type']
+  ) => {
+    const parentIndex = tableData.findIndex((v) => v.id === id)
+    console.log(id, parent, type, parentIndex)
   }
+
   console.log(tableData)
 
   return (
@@ -102,41 +101,94 @@ const MyTable: React.FC<IMyTableProps> = ({ tableData }) => {
                     />
                   )
                 }
+
                 return (
-                  <TableRow key={row.id}>
-                    <TableCell>
-                      <img
-                        src={row.parent ? secondLevelIcon : firstLevelIcon}
-                        alt=''
-                        style={{ cursor: 'pointer' }}
-                        onClick={() =>
-                          createLevel('level', row.parent ? row.parent + 1 : 1)
-                        }
-                      />
-                    </TableCell>
+                  <TableRow
+                    key={row.id}
+                    sx={{
+                      position: 'relative',
+                    }}>
                     <TableCell
-                      onDoubleClick={() => seleectRowIdForEdit(row.id)}>
+                      sx={{
+                        '&:before': {
+                          content: '""',
+                          position: 'absolute',
+                          bottom: '30px',
+                          left: 4,
+                          width: '15px',
+                          borderBottom: '1px solid #333',
+                        },
+                      }}>
+                      {row.type === 'level' ? (
+                        row.parent !== null ? (
+                          <Box>
+                            <img
+                              src={secondLevelIcon}
+                              alt=''
+                              style={{ cursor: 'pointer' }}
+                              onClick={() =>
+                                createRow(row.id, row.parent, 'level')
+                              }
+                            />
+                            <img
+                              src={calcIcon}
+                              alt=''
+                              style={{ cursor: 'pointer' }}
+                              onClick={() =>
+                                createRow(row.id, row.parent, 'row')
+                              }
+                            />
+                          </Box>
+                        ) : (
+                          <Box>
+                            <img src={firstLevelIcon} alt='' />
+                            <img
+                              src={secondLevelIcon}
+                              alt=''
+                              style={{ cursor: 'pointer' }}
+                              onClick={() =>
+                                createRow(row.id, row.parent, 'level')
+                              }
+                            />
+                            <img
+                              src={calcIcon}
+                              alt=''
+                              style={{ cursor: 'pointer' }}
+                              onClick={() =>
+                                createRow(row.id, row.parent, 'row')
+                              }
+                            />
+                          </Box>
+                        )
+                      ) : (
+                        <img
+                          src={calcIcon}
+                          alt=''
+                          style={{ cursor: 'pointer' }}
+                        />
+                      )}
+                    </TableCell>
+                    <TableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
                       {row.title}
                     </TableCell>
-                    <TableCell
-                      onDoubleClick={() => seleectRowIdForEdit(row.id)}>
+                    <TableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
                       {row.unit}
                     </TableCell>
-                    <TableCell
-                      onDoubleClick={() => seleectRowIdForEdit(row.id)}>
+                    <TableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
                       {row.quantity}
                     </TableCell>
-                    <TableCell
-                      onDoubleClick={() => seleectRowIdForEdit(row.id)}>
+                    <TableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
                       {row.unitPrice}
                     </TableCell>
-                    <TableCell
-                      onDoubleClick={() => seleectRowIdForEdit(row.id)}>
+                    <TableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
                       {row.price}
                     </TableCell>
                   </TableRow>
                 )
               })
+            )}
+            {onCreation && (
+              <EditRow rowFunc={addNewRow} mode='create' parent={null} />
             )}
           </TableBody>
         </Table>
