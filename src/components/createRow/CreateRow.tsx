@@ -7,22 +7,21 @@ import calcIcon from '../../assets/svg/calcIcon.svg'
 import { useState } from 'react'
 
 interface IEditRowProps {
-  id?: RowData['id']
-  parent?: RowData['parent']
+  parent?: NewRowData['parent']
   type: NewRowData['type']
-  rowFunc: (row: RowData) => void
-  editRow?: RowData
+  rowFunc: (row: NewRowData) => void
+  editRow?: NewRowData
+  setOnCreated: (bool: boolean) => void
 }
+
 const EditRow: React.FC<IEditRowProps> = ({
-  id,
   parent = null,
   type = 'level',
   rowFunc,
-
+  setOnCreated,
   ...props
 }) => {
   const DEFAULT_ROW = {
-    id: 0,
     title: '',
     unit: '',
     quantity: 0,
@@ -31,14 +30,14 @@ const EditRow: React.FC<IEditRowProps> = ({
     parent: parent,
     type: type,
   }
-  const [row, setRow] = useState<RowData>(
+  const [row, setRow] = useState<NewRowData>(
     props.editRow ? props.editRow : DEFAULT_ROW
   )
 
   const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
 
-    const fieldName = event.target.getAttribute('name') as keyof RowData
+    const fieldName = event.target.getAttribute('name') as keyof NewRowData
     const fieldValue = event.target.value
     const newRowData = { ...row, [fieldName]: fieldValue }
 
@@ -48,6 +47,7 @@ const EditRow: React.FC<IEditRowProps> = ({
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter') {
       rowFunc(row)
+      setOnCreated(false)
     }
   }
 
@@ -56,8 +56,8 @@ const EditRow: React.FC<IEditRowProps> = ({
   return (
     <TableRow>
       <TableCell>
-        {type === 'level' ? (
-          parent && <img src={firstLevelIcon} alt='' />
+        {parent === null && type === 'level' ? (
+          <img src={firstLevelIcon} alt='' />
         ) : (
           <img src={secondLevelIcon} alt='' />
         )}

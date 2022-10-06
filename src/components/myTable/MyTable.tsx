@@ -5,12 +5,8 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Box,
+  styled,
 } from '@mui/material/'
-
-import firstLevelIcon from '../../assets/svg/firstLevelIcon.svg'
-import secondLevelIcon from '../../assets/svg/secondLevelIcon.svg'
-import calcIcon from '../../assets/svg/calcIcon.svg'
 
 import { useState } from 'react'
 
@@ -18,6 +14,7 @@ import { editOneRow, setNewRow } from '../../redux/slices/tableSlice'
 import { useDispatch } from 'react-redux'
 
 import EditRow from './../editRow/'
+import MyTableRow from '../myTableRow'
 
 interface IMyTableProps {
   tableData: RowData[]
@@ -28,7 +25,6 @@ const MyTable: React.FC<IMyTableProps> = ({ tableData }) => {
 
   const [rowIdForEdit, setRowIdForEdit] = useState<RowData['id'] | null>(null)
 
-  const [onCreation, setOnCreation] = useState(false)
   const selectRowIdForEdit = (id: RowData['id']) => {
     setRowIdForEdit(id)
   }
@@ -38,22 +34,16 @@ const MyTable: React.FC<IMyTableProps> = ({ tableData }) => {
     setRowIdForEdit(null)
   }
 
-  const addNewRow = (row: RowData) => {
+  const addNewRow = (row: NewRowData) => {
     dispatch(setNewRow(row))
-    setOnCreation(false)
   }
 
-  const createRow = (
-    id: RowData['id'],
-    parent: RowData['parent'],
-    type: RowData['type']
-  ) => {
-    const parentIndex = tableData.findIndex((v) => v.id === id)
-    console.log(id, parent, type, parentIndex)
-  }
+  const MyTableCell = styled(TableCell)({
+    lineHeight: '130%',
+    fontSize: '14px',
+  })
 
-  console.log(tableData)
-
+  console.log('table', tableData)
   return (
     <TableContainer sx={{ height: '100vh' }}>
       <form>
@@ -76,17 +66,17 @@ const MyTable: React.FC<IMyTableProps> = ({ tableData }) => {
           }}>
           <TableHead>
             <TableRow>
-              <TableCell>Уровень</TableCell>
-              <TableCell>Наименование работ</TableCell>
-              <TableCell>Ед.Изм.</TableCell>
-              <TableCell>Количество</TableCell>
-              <TableCell>Цена за ед.</TableCell>
-              <TableCell>Стоимость</TableCell>
+              <MyTableCell width={120}>Уровень</MyTableCell>
+              <MyTableCell width={738}>Наименование работ</MyTableCell>
+              <MyTableCell>Ед.Изм.</MyTableCell>
+              <MyTableCell>Количество</MyTableCell>
+              <MyTableCell>Цена за ед.</MyTableCell>
+              <MyTableCell>Стоимость</MyTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {!tableData.length ? (
-              <EditRow mode='create' rowFunc={addNewRow} />
+              <EditRow rowFunc={addNewRow} type={'level'} />
             ) : (
               tableData.map((row) => {
                 if (row.id === rowIdForEdit) {
@@ -94,101 +84,22 @@ const MyTable: React.FC<IMyTableProps> = ({ tableData }) => {
                     <EditRow
                       key={row.id}
                       id={row.id}
+                      type={row.type}
                       parent={row.parent}
                       rowFunc={editRow}
                       editRow={row}
-                      mode='edit'
                     />
                   )
                 }
-
                 return (
-                  <TableRow
+                  <MyTableRow
                     key={row.id}
-                    sx={{
-                      position: 'relative',
-                    }}>
-                    <TableCell
-                      sx={{
-                        '&:before': {
-                          content: '""',
-                          position: 'absolute',
-                          bottom: '30px',
-                          left: 4,
-                          width: '15px',
-                          borderBottom: '1px solid #333',
-                        },
-                      }}>
-                      {row.type === 'level' ? (
-                        row.parent !== null ? (
-                          <Box>
-                            <img
-                              src={secondLevelIcon}
-                              alt=''
-                              style={{ cursor: 'pointer' }}
-                              onClick={() =>
-                                createRow(row.id, row.parent, 'level')
-                              }
-                            />
-                            <img
-                              src={calcIcon}
-                              alt=''
-                              style={{ cursor: 'pointer' }}
-                              onClick={() =>
-                                createRow(row.id, row.parent, 'row')
-                              }
-                            />
-                          </Box>
-                        ) : (
-                          <Box>
-                            <img src={firstLevelIcon} alt='' />
-                            <img
-                              src={secondLevelIcon}
-                              alt=''
-                              style={{ cursor: 'pointer' }}
-                              onClick={() =>
-                                createRow(row.id, row.parent, 'level')
-                              }
-                            />
-                            <img
-                              src={calcIcon}
-                              alt=''
-                              style={{ cursor: 'pointer' }}
-                              onClick={() =>
-                                createRow(row.id, row.parent, 'row')
-                              }
-                            />
-                          </Box>
-                        )
-                      ) : (
-                        <img
-                          src={calcIcon}
-                          alt=''
-                          style={{ cursor: 'pointer' }}
-                        />
-                      )}
-                    </TableCell>
-                    <TableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
-                      {row.title}
-                    </TableCell>
-                    <TableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
-                      {row.unit}
-                    </TableCell>
-                    <TableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
-                      {row.quantity}
-                    </TableCell>
-                    <TableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
-                      {row.unitPrice}
-                    </TableCell>
-                    <TableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
-                      {row.price}
-                    </TableCell>
-                  </TableRow>
+                    row={row}
+                    selectRowIdForEdit={selectRowIdForEdit}
+                    rowFunc={addNewRow}
+                  />
                 )
               })
-            )}
-            {onCreation && (
-              <EditRow rowFunc={addNewRow} mode='create' parent={null} />
             )}
           </TableBody>
         </Table>

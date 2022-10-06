@@ -40,7 +40,7 @@ const SideBar: React.FC = () => {
             <Typography sx={{ lineHeight: '16px', fontSize: '14px' }}>
               Название проекта
             </Typography>
-            <Typography sx={{ lineHeight: '12px', fontSize: '10px' }}>
+            <Typography sx={{ lineHeight: '13px', fontSize: '10px' }}>
               Аббревиатура
             </Typography>
           </Box>
@@ -50,11 +50,21 @@ const SideBar: React.FC = () => {
 
         <List
           component='nav'
-          sx={{ '&& .Mui-selected': { bgcolor: '#A1A1AA' } }}>
+          sx={{
+            '&& .Mui-selected': { bgcolor: '#A1A1AA' },
+            paddingTop: '2px',
+          }}>
           {PRODJECTS.map((project, i) => (
             <ListItem disablePadding key={project.fullname}>
               <ListItemButton
-                sx={{ height: '32px', gap: '1rem', color: 'white' }}
+                sx={{
+                  display: 'flex',
+                  paddingTop: '0px',
+                  paddingLeft: '20px',
+                  height: '32px',
+                  gap: '1rem',
+                  color: 'white',
+                }}
                 selected={selectedIndex === i}
                 onClick={() => setSelectedIndex(i)}>
                 <Dashboard />

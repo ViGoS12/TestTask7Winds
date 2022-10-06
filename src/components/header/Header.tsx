@@ -20,11 +20,12 @@ const MyToolbar = styled(Toolbar)({
   display: 'flex',
   justifyContent: 'space-between',
   height: '44px',
+  paddingRight: 0,
 })
 
 const UserBox = styled(Box)({
   display: 'flex',
-  gap: '0.5rem',
+  gap: '5px',
   alignItems: 'center',
 })
 
@@ -35,62 +36,65 @@ const Header: React.FC = () => {
     setValue(newValue)
   }
 
+  function a11yProps(index: number) {
+    return {
+      id: `full-width-tab-${index}`,
+      'aria-controls': `full-width-tabpanel-${index}`,
+    }
+  }
+
   return (
-    <AppBar elevation={0} position='sticky'>
-      <MyToolbar variant='dense'>
-        <Box sx={{ display: 'flex' }}>
-          <IconButton edge='start' color='secondary' sx={{ mr: 1 }}>
-            <Apps />
-          </IconButton>
-          <IconButton size='small' color='secondary'>
-            <Reply />
-          </IconButton>
-          <Tabs value={value} onChange={handleChange}>
-            {MENUITEM.map((page) => (
-              <Tab sx={{ color: 'white' }} key={page} label={page} />
-            ))}
-          </Tabs>
-        </Box>
+    <>
+      <AppBar
+        elevation={0}
+        position='sticky'
+        sx={{
+          height: '44px',
+          '&& .MuiToolbar-root': {
+            paddingRight: 0,
+          },
+        }}>
+        <MyToolbar variant='dense'>
+          <Box sx={{ display: 'flex', gap: '5px' }}>
+            <IconButton edge='start' color='secondary' sx={{ mr: 1 }}>
+              <Apps />
+            </IconButton>
+            <IconButton size='small' color='secondary'>
+              <Reply />
+            </IconButton>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              textColor='inherit'
+              indicatorColor='primary'>
+              {MENUITEM.map((page, i) => (
+                <Tab
+                  sx={{
+                    color: 'white',
+                    textTransform: 'capitalize',
+                    fontSize: '14px',
+                  }}
+                  key={page}
+                  label={page}
+                  {...a11yProps(i)}
+                />
+              ))}
+            </Tabs>
+          </Box>
 
-        <UserBox>
-          <Avatar
-            src='/assets/svg/avatar.svg'
-            sx={{ height: '28px', width: '28px' }}
-          />
-          <Typography>Антон Петров</Typography>
+          <UserBox>
+            <Avatar
+              src='/assets/svg/avatar.svg'
+              sx={{ height: '28px', width: '28px' }}
+            />
+            <Typography sx={{ lineHeight: '16px' }}>Антон Петров</Typography>
 
-          <KeyboardArrowDown />
-        </UserBox>
-        {/* <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-          {MENUITEM.map((page) => (
-            <MenuItem key={page}>
-              <Typography
-                textAlign='center'
-                sx={{
-                  borderBottom: 2,
-                  borderBottomColor: 'white',
-                }}>
-                {page}
-              </Typography>
-            </MenuItem>
-          ))}
-        </Box>
-        <Box
-          sx={{
-            flexGrow: 1,
-            display: {
-              xs: 'none',
-              md: 'flex',
-              gap: '0.5rem',
-              alignItems: 'center',
-            },
-          }}>
-          
-          
-        </Box> */}
-      </MyToolbar>
+            <KeyboardArrowDown />
+          </UserBox>
+        </MyToolbar>
+      </AppBar>
       <Divider />
-    </AppBar>
+    </>
   )
 }
 

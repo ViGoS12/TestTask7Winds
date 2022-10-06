@@ -17,35 +17,24 @@ export const tableSlice = createSlice({
   initialState,
   reducers: {
     setNewRow(state, action: PayloadAction<NewRowData>) {
-      saveRow(action.payload, state.rowData)
-    },
-    editOneRow(state, action: PayloadAction<RowData>) {
-      editRow(action.payload, state.rowData)
-    },
-    setSortedRowData(state, action: PayloadAction<RowData[]>) {
       const insert = (arr: RowData[], index: number, newItem: RowData) => [
         ...arr.slice(0, index),
         newItem,
         ...arr.slice(index),
       ]
-      action.payload.forEach((item) => {
-        if (item.type === 'level') {
-          state.sortedRowData = [...state.sortedRowData, item]
-        } else {
-          const index = state.sortedRowData.findIndex(
-            (_item) => _item.id === item.parent
-          )
-          if (index !== -1) {
-            state.sortedRowData = insert(state.sortedRowData, index + 1, item)
-          } else {
-            state.sortedRowData = insert(state.sortedRowData, 1, item)
-          }
-        }
-      })
+      const array: RowData[] = [...state.rowData]
+      const row = saveRow(action.payload, array).current
+
+      const index = state.rowData.findIndex((_item) => _item.id === row.parent)
+
+      state.rowData = insert(state.rowData, index + 1, row)
+    },
+    editOneRow(state, action: PayloadAction<RowData>) {
+      editRow(action.payload, state.rowData)
     },
   },
 })
 
-export const { setNewRow, editOneRow, setSortedRowData } = tableSlice.actions
+export const { setNewRow, editOneRow } = tableSlice.actions
 
 export default tableSlice.reducer

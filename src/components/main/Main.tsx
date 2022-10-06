@@ -1,9 +1,8 @@
 import { Box, Divider, styled, Typography } from '@mui/material/'
 import MyTable from '../myTable'
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+
+import { useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
-import { setSortedRowData } from '../../redux/slices/tableSlice'
 
 const HeaderProject = styled(Box)({
   backgroundColor: '#27272A',
@@ -12,16 +11,9 @@ const HeaderProject = styled(Box)({
 })
 
 const Main: React.FC = () => {
-  const dispatch = useDispatch()
-  const { rowData, sortedRowData } = useSelector(
-    (state: RootState) => state.table
-  )
-  useEffect(() => {
-    dispatch(setSortedRowData(rowData))
-  }, [rowData])
-
+  const { rowData } = useSelector((state: RootState) => state.table)
   return (
-    <Box bgcolor='#202124' flex={5}>
+    <Box bgcolor='#202124' flex={7}>
       <HeaderProject>
         <Typography sx={{ m: 1.5, lineHeight: '21px', fontSize: '18px' }}>
           Строительно-монтажные работы
@@ -31,7 +23,7 @@ const Main: React.FC = () => {
 
       <Divider />
 
-      <MyTable tableData={sortedRowData} />
+      <MyTable tableData={rowData} />
     </Box>
   )
 }
