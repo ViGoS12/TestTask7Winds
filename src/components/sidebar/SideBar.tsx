@@ -7,21 +7,13 @@ import {
   ListItemButton,
   ListItemText,
   Typography,
-  styled,
 } from '@mui/material'
-
-import { PRODJECTS } from '../../constants'
-import { useState } from 'react'
+import { NameProject } from '../../styles/shared'
 import { KeyboardArrowDown } from '@mui/icons-material/'
 
-const NameProject = styled(Box)({
-  backgroundColor: '#27272A',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  color: '#A1A1AA',
-  margin: '8px',
-})
+import { PRODJECTS } from '../../constants'
+
+import { useState } from 'react'
 
 const SideBar: React.FC = () => {
   const [selectedIndex, setSelectedIndex] = useState(4)
@@ -32,7 +24,6 @@ const SideBar: React.FC = () => {
         bgcolor='#27272A'
         flex={1}
         sx={{
-          height: '100vh',
           display: { xs: 'none', sm: 'block' },
         }}>
         <NameProject>

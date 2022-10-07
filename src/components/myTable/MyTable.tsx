@@ -3,18 +3,18 @@ import {
   TableContainer,
   Table,
   TableRow,
-  TableCell,
   TableBody,
-  styled,
 } from '@mui/material/'
+
+import { HeaderTableCell } from './../../styles/shared'
+
+import EditRow from './../editRow/'
+import MyTableRow from '../myTableRow'
 
 import { useState } from 'react'
 
 import { editOneRow, setNewRow } from '../../redux/slices/tableSlice'
 import { useDispatch } from 'react-redux'
-
-import EditRow from './../editRow/'
-import MyTableRow from '../myTableRow'
 
 interface IMyTableProps {
   tableData: RowData[]
@@ -38,12 +38,6 @@ const MyTable: React.FC<IMyTableProps> = ({ tableData }) => {
     dispatch(setNewRow(row))
   }
 
-  const MyTableCell = styled(TableCell)({
-    lineHeight: '130%',
-    fontSize: '14px',
-  })
-
-  console.log('table', tableData)
   return (
     <TableContainer sx={{ height: '100vh' }}>
       <form>
@@ -51,11 +45,13 @@ const MyTable: React.FC<IMyTableProps> = ({ tableData }) => {
           aria-label='table'
           stickyHeader
           sx={{
-            pl: 2,
-            pr: 2,
+            pl: 1,
+            pr: 1,
             '&& .MuiTableCell-body': {
               color: 'white',
               borderBottom: '1px solid #414144',
+              paddingTop: 0,
+              paddingBottom: 0,
             },
             '&& .MuiTableCell-head': {
               p: '11px',
@@ -66,12 +62,12 @@ const MyTable: React.FC<IMyTableProps> = ({ tableData }) => {
           }}>
           <TableHead>
             <TableRow>
-              <MyTableCell width={120}>Уровень</MyTableCell>
-              <MyTableCell width={738}>Наименование работ</MyTableCell>
-              <MyTableCell>Ед.Изм.</MyTableCell>
-              <MyTableCell>Количество</MyTableCell>
-              <MyTableCell>Цена за ед.</MyTableCell>
-              <MyTableCell>Стоимость</MyTableCell>
+              <HeaderTableCell width='6.5%'>Уровень</HeaderTableCell>
+              <HeaderTableCell width='46%'>Наименование работ</HeaderTableCell>
+              <HeaderTableCell width='12.5%'>Ед. изм.</HeaderTableCell>
+              <HeaderTableCell width='12%'>Количество</HeaderTableCell>
+              <HeaderTableCell width='12%'>Цена за ед.</HeaderTableCell>
+              <HeaderTableCell>Стоимость</HeaderTableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -33,10 +33,11 @@ const Header: React.FC = () => {
   const [value, setValue] = useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    console.log(newValue)
     setValue(newValue)
   }
 
-  function a11yProps(index: number) {
+  const a11yProps = (index: number) => {
     return {
       id: `full-width-tab-${index}`,
       'aria-controls': `full-width-tabpanel-${index}`,

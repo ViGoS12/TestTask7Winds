@@ -1,10 +1,12 @@
-import { TableRow, TableCell, styled, Box } from '@mui/material/'
+import { TableRow, Box } from '@mui/material/'
+import { RowTableCell } from './../../styles/shared'
 
 import firstLevelIcon from '../../assets/svg/firstLevelIcon.svg'
 import secondLevelIcon from '../../assets/svg/secondLevelIcon.svg'
 import calcIcon from '../../assets/svg/calcIcon.svg'
 
-import CreateRow from './../createRow/index'
+import CreateRow from './../createRow/'
+
 import { useState } from 'react'
 
 interface IMyTableRowProps {
@@ -12,11 +14,6 @@ interface IMyTableRowProps {
   selectRowIdForEdit: (id: RowData['id']) => void
   rowFunc: (row: NewRowData) => void
 }
-
-const MyTableCell = styled(TableCell)({
-  lineHeight: '130%',
-  fontSize: '14px',
-})
 
 const MyTableRow: React.FC<IMyTableRowProps> = ({
   row,
@@ -26,89 +23,121 @@ const MyTableRow: React.FC<IMyTableRowProps> = ({
   const [onCreation, setOnCreation] = useState(false)
   const [onCreationType, setOnCreationType] =
     useState<NewRowData['type']>('level')
+  const [isHovering, setIsHovering] = useState(false)
+
+  const handleMouseOver = () => {
+    setIsHovering(true)
+  }
+
+  const handleMouseOut = () => {
+    setIsHovering(false)
+  }
 
   const createRow = (type: RowData['type']) => {
     setOnCreationType(type)
     setOnCreation(true)
   }
 
+  const replaceDot = (number: number): string => {
+    return String(number).replaceAll('.', ',')
+  }
+
+  const divideNumber = (stringNum: string): string => {
+    return stringNum.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+  }
+
   return (
     <>
-      <TableRow
-        sx={{
-          position: 'relative',
-        }}>
-        <MyTableCell
+      <TableRow>
+        <RowTableCell
           sx={{
-            paddingLeft: row.parent ? row.parent * 3 : 0,
-            '&:before': {
-              content: '""',
-              position: 'absolute',
-              bottom: '30px',
-              left: 4,
-              width: '15px',
-              borderBottom: '1px solid #333',
-            },
+            paddingLeft: row.parent ? row.parent * 1.5 : 0,
           }}>
           {row.type === 'level' ? (
             row.parent !== null ? (
-              <Box>
+              <Box
+                sx={{
+                  marginLeft: '30px',
+                  width: 'fit-content',
+                  borderRadius: '6px',
+                  backgroundColor: isHovering ? '#414144' : 'none',
+                }}
+                onMouseOver={handleMouseOver}
+                onMouseOut={handleMouseOut}>
                 <img
                   src={secondLevelIcon}
                   alt=''
                   style={{ cursor: 'pointer' }}
                   onClick={() => createRow('level')}
                 />
-                <img
-                  src={calcIcon}
-                  alt=''
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => createRow('row')}
-                />
+                {isHovering && (
+                  <img
+                    src={calcIcon}
+                    alt=''
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => createRow('row')}
+                  />
+                )}
               </Box>
             ) : (
-              <Box>
+              <Box
+                sx={{
+                  marginLeft: 1,
+                  width: 'fit-content',
+
+                  borderRadius: '6px',
+                  backgroundColor: isHovering ? '#414144' : 'none',
+                }}
+                onMouseOver={handleMouseOver}
+                onMouseOut={handleMouseOut}>
                 <img src={firstLevelIcon} alt='' />
-                <img
-                  src={secondLevelIcon}
-                  alt=''
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => createRow('level')}
-                />
-                <img
-                  src={calcIcon}
-                  alt=''
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => createRow('row')}
-                />
+
+                {isHovering && (
+                  <>
+                    <img
+                      src={secondLevelIcon}
+                      alt=''
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => createRow('level')}
+                    />
+                    <img
+                      src={calcIcon}
+                      alt=''
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => createRow('row')}
+                    />
+                  </>
+                )}
               </Box>
             )
           ) : (
-            <img src={calcIcon} alt='' style={{ cursor: 'pointer' }} />
+            <Box sx={{ marginLeft: '38px' }}>
+              <img src={calcIcon} alt='' />
+            </Box>
           )}
-        </MyTableCell>
-        <MyTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
+        </RowTableCell>
+        <RowTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
           {row.title}
-        </MyTableCell>
-        <MyTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
-          {row.unit}
-        </MyTableCell>
-        <MyTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
-          {row.quantity}
-        </MyTableCell>
-        <MyTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
-          {row.unitPrice}
-        </MyTableCell>
-        <MyTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
-          {row.price}
-        </MyTableCell>
+        </RowTableCell>
+        <RowTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
+          {row.type === 'row' && row.unit}
+        </RowTableCell>
+        <RowTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
+          {row.type === 'row' && divideNumber(replaceDot(row.quantity))}
+        </RowTableCell>
+        <RowTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
+          {row.type === 'row' && divideNumber(replaceDot(row.unitPrice))}
+        </RowTableCell>
+        <RowTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
+          {divideNumber(replaceDot(row.price))}
+        </RowTableCell>
       </TableRow>
       {onCreation && (
         <CreateRow
           type={onCreationType}
           parent={row.id}
           rowFunc={rowFunc}
-          setOnCreated={() => setOnCreation(false)}
+          setOnCreation={() => setOnCreation(false)}
         />
       )}
     </>

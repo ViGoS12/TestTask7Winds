@@ -4,12 +4,10 @@ import { editRow } from './../../utils/editRow'
 
 interface ITableSlice {
   rowData: RowData[]
-  sortedRowData: RowData[]
 }
 
 const initialState: ITableSlice = {
   rowData: [],
-  sortedRowData: [],
 }
 
 export const tableSlice = createSlice({

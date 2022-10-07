@@ -1,14 +1,10 @@
-import { Box, Divider, styled, Typography } from '@mui/material/'
+import { Box, Divider, Typography } from '@mui/material/'
+import { HeaderProject } from '../../styles/shared'
+
 import MyTable from '../myTable'
 
 import { useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
-
-const HeaderProject = styled(Box)({
-  backgroundColor: '#27272A',
-  display: 'flex',
-  color: 'white',
-})
 
 const Main: React.FC = () => {
   const { rowData } = useSelector((state: RootState) => state.table)

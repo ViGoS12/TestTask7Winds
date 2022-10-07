@@ -1,5 +1,16 @@
 export const MENUITEM = ['Просмотр', 'Управление']
 
+export const DEFAULT_ROW: RowData = {
+  id: 0,
+  title: '',
+  unit: '',
+  quantity: 0,
+  unitPrice: 0,
+  price: 0,
+  parent: null,
+  type: 'level',
+}
+
 export const PRODJECTS = [
   {
     name: 'По проекту',
