@@ -31,8 +31,10 @@ const Table: React.FC<ITableProps> = ({ tableData }) => {
     setLevel(getLevel(parent, tableData))
   }
 
-  const selectRowIdForEdit = (id: RowData['id']) => {
-    setRowIdForEdit(id)
+  const selectRowIdForEdit = (id: RowData['id'], el: string) => {
+    if (el.length !== 0) {
+      setRowIdForEdit(id)
+    }
   }
 
   const editRow = (row: RowData) => {

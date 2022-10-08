@@ -12,7 +12,7 @@ import Line from '../UI/Line'
 
 interface ITableRowProps {
   row: RowData
-  selectRowIdForEdit: (id: RowData['id']) => void
+  selectRowIdForEdit: (id: RowData['id'], el: string) => void
   rowFunc: (row: NewRowData) => void
   rowIndex: number
   getRowLevel: (parent: RowData['parent']) => number
@@ -157,19 +157,34 @@ const TableRow: React.FC<ITableRowProps> = ({
             </Box>
           )}
         </RowTableCell>
-        <RowTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
+        <RowTableCell
+          onDoubleClick={() => selectRowIdForEdit(row.id, row.title)}>
           {row.title}
         </RowTableCell>
-        <RowTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
+        <RowTableCell
+          onDoubleClick={() => selectRowIdForEdit(row.id, row.unit)}>
           {row.type === 'row' && row.unit}
         </RowTableCell>
-        <RowTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
+        <RowTableCell
+          onDoubleClick={() =>
+            selectRowIdForEdit(
+              row.id,
+              row.type === 'row' ? String(row.quantity) : ''
+            )
+          }>
           {row.type === 'row' && divideNumber(replaceDot(row.quantity))}
         </RowTableCell>
-        <RowTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
+        <RowTableCell
+          onDoubleClick={() =>
+            selectRowIdForEdit(
+              row.id,
+              row.type === 'row' ? String(row.unitPrice) : ''
+            )
+          }>
           {row.type === 'row' && divideNumber(replaceDot(row.unitPrice))}
         </RowTableCell>
-        <RowTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
+        <RowTableCell
+          onDoubleClick={() => selectRowIdForEdit(row.id, String(row.price))}>
           {divideNumber(replaceDot(row.price))}
         </RowTableCell>
       </MuiTableRow>
