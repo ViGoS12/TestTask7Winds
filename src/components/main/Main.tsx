@@ -1,13 +1,14 @@
 import { Box, Divider, Typography } from '@mui/material/'
 import { HeaderProject } from '../../styles/shared'
 
-import MyTable from '../myTable'
+import Table from '../table'
 
 import { useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 
 const Main: React.FC = () => {
   const { rowData } = useSelector((state: RootState) => state.table)
+
   return (
     <Box bgcolor='#202124' flex={7}>
       <HeaderProject>
@@ -19,7 +20,7 @@ const Main: React.FC = () => {
 
       <Divider />
 
-      <MyTable tableData={rowData} />
+      <Table tableData={rowData} />
     </Box>
   )
 }

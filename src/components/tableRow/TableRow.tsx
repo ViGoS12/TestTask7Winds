@@ -1,26 +1,32 @@
-import { TableRow, Box } from '@mui/material/'
-import { RowTableCell } from './../../styles/shared'
+import { TableRow as MuiTableRow, Box } from '@mui/material/'
+import { RowTableCell } from '../../styles/shared'
 
 import firstLevelIcon from '../../assets/svg/firstLevelIcon.svg'
 import secondLevelIcon from '../../assets/svg/secondLevelIcon.svg'
 import calcIcon from '../../assets/svg/calcIcon.svg'
 
-import CreateRow from './../createRow/'
+import CreateRow from '../createRow'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Line from '../UI/Line'
 
-interface IMyTableRowProps {
+interface ITableRowProps {
   row: RowData
   selectRowIdForEdit: (id: RowData['id']) => void
   rowFunc: (row: NewRowData) => void
+  rowIndex: number
+  getRowLevel: (parent: RowData['parent']) => number
 }
 
-const MyTableRow: React.FC<IMyTableRowProps> = ({
+const TableRow: React.FC<ITableRowProps> = ({
   row,
   selectRowIdForEdit,
   rowFunc,
+  rowIndex,
+  getRowLevel,
 }) => {
   const [onCreation, setOnCreation] = useState(false)
+  const [level, setLevel] = useState(0)
   const [onCreationType, setOnCreationType] =
     useState<NewRowData['type']>('level')
   const [isHovering, setIsHovering] = useState(false)
@@ -46,17 +52,33 @@ const MyTableRow: React.FC<IMyTableRowProps> = ({
     return stringNum.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
   }
 
+  useEffect(() => {
+    setLevel(getRowLevel(row.parent))
+  }, [])
+
   return (
     <>
-      <TableRow>
+      <MuiTableRow sx={{ position: 'relative' }}>
         <RowTableCell
           sx={{
-            paddingLeft: row.parent ? row.parent * 1.5 : 0,
+            position: 'relative',
+            paddingLeft: level <= 1 ? 0 : level * 2 - 1.3,
+            // '&:before': {
+            //   content: '""',
+            //   position: 'absolute',
+            //   bottom: '30px',
+            //   left: level > 1 ? level * 15 : 20,
+            //   width: rowIndex ? '15px' : 0,
+            //   borderBottom: '1px solid #C6C6C6',
+            // },
           }}>
+          {/* {rowIndex ? <Line level={level === 0 ? 1 : 2} /> : ''} */}
           {row.type === 'level' ? (
             row.parent !== null ? (
               <Box
                 sx={{
+                  display: 'flex',
+                  alignItems: 'center',
                   marginLeft: '30px',
                   width: 'fit-content',
                   borderRadius: '6px',
@@ -67,14 +89,18 @@ const MyTableRow: React.FC<IMyTableRowProps> = ({
                 <img
                   src={secondLevelIcon}
                   alt=''
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: 'pointer', zIndex: 1, position: 'relative' }}
                   onClick={() => createRow('level')}
                 />
                 {isHovering && (
                   <img
                     src={calcIcon}
                     alt=''
-                    style={{ cursor: 'pointer' }}
+                    style={{
+                      zIndex: 1,
+                      cursor: 'pointer',
+                      position: 'relative',
+                    }}
                     onClick={() => createRow('row')}
                   />
                 )}
@@ -84,26 +110,37 @@ const MyTableRow: React.FC<IMyTableRowProps> = ({
                 sx={{
                   marginLeft: 1,
                   width: 'fit-content',
-
                   borderRadius: '6px',
                   backgroundColor: isHovering ? '#414144' : 'none',
                 }}
                 onMouseOver={handleMouseOver}
                 onMouseOut={handleMouseOut}>
-                <img src={firstLevelIcon} alt='' />
+                <img
+                  src={firstLevelIcon}
+                  alt=''
+                  style={{ zIndex: 1, position: 'relative' }}
+                />
 
                 {isHovering && (
                   <>
                     <img
                       src={secondLevelIcon}
                       alt=''
-                      style={{ cursor: 'pointer' }}
+                      style={{
+                        cursor: 'pointer',
+                        zIndex: 1,
+                        position: 'relative',
+                      }}
                       onClick={() => createRow('level')}
                     />
                     <img
                       src={calcIcon}
                       alt=''
-                      style={{ cursor: 'pointer' }}
+                      style={{
+                        cursor: 'pointer',
+                        zIndex: 1,
+                        position: 'relative',
+                      }}
                       onClick={() => createRow('row')}
                     />
                   </>
@@ -111,8 +148,12 @@ const MyTableRow: React.FC<IMyTableRowProps> = ({
               </Box>
             )
           ) : (
-            <Box sx={{ marginLeft: '38px' }}>
-              <img src={calcIcon} alt='' />
+            <Box sx={{ marginLeft: '30px' }}>
+              <img
+                src={calcIcon}
+                style={{ zIndex: 1, position: 'relative' }}
+                alt=''
+              />
             </Box>
           )}
         </RowTableCell>
@@ -131,17 +172,18 @@ const MyTableRow: React.FC<IMyTableRowProps> = ({
         <RowTableCell onDoubleClick={() => selectRowIdForEdit(row.id)}>
           {divideNumber(replaceDot(row.price))}
         </RowTableCell>
-      </TableRow>
+      </MuiTableRow>
       {onCreation && (
         <CreateRow
           type={onCreationType}
           parent={row.id}
           rowFunc={rowFunc}
           setOnCreation={() => setOnCreation(false)}
+          getRowLevel={getRowLevel}
         />
       )}
     </>
   )
 }
 
-export default MyTableRow
+export default TableRow

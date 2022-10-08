@@ -1,25 +1,27 @@
-import { TableRow, TableCell, TextField, Typography, Box } from '@mui/material/'
+import { TableRow, TableCell, Typography, Box } from '@mui/material/'
 
-import { RowTableCell } from '../../styles/shared'
+import { RowTableCell, RowTextField } from '../../styles/shared'
 
 import firstLevelIcon from '../../assets/svg/firstLevelIcon.svg'
 import secondLevelIcon from '../../assets/svg/secondLevelIcon.svg'
 import calcIcon from '../../assets/svg/calcIcon.svg'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface IEditRowProps {
   parent: NewRowData['parent']
   type: NewRowData['type']
   rowFunc: (row: NewRowData) => void
   setOnCreation: (bool: boolean) => void
+  getRowLevel: (parent: RowData['parent']) => number
 }
 
-const EditRow: React.FC<IEditRowProps> = ({
+const CreateRow: React.FC<IEditRowProps> = ({
   parent,
   type,
   rowFunc,
   setOnCreation,
+  getRowLevel,
 }) => {
   const DEFAULT_ROW = {
     title: '',
@@ -31,6 +33,7 @@ const EditRow: React.FC<IEditRowProps> = ({
     type: type,
   }
   const [row, setRow] = useState<NewRowData>(DEFAULT_ROW)
+  const [level, setLevel] = useState(0)
 
   const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
@@ -38,13 +41,13 @@ const EditRow: React.FC<IEditRowProps> = ({
     const fieldName = event.target.getAttribute('name') as keyof NewRowData
     const fieldValue = event.target.value
 
-    const newRowData = { ...row, [fieldName]: fieldValue }
+    const newRowData = { ...row, [fieldName]: fieldValue, type }
     setRow(newRowData)
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter') {
-      if (row.price !== row.unitPrice * row.quantity) {
+      if (type === 'row' && row.price !== row.unitPrice * row.quantity) {
         row.price = row.unitPrice * row.quantity
       }
       rowFunc(row)
@@ -52,11 +55,15 @@ const EditRow: React.FC<IEditRowProps> = ({
     }
   }
 
-  const isDisibled = row.type === 'level'
+  useEffect(() => {
+    setLevel(getRowLevel(row.parent))
+  }, [])
+
+  const isDisibled = type === 'level'
 
   return (
     <TableRow>
-      <RowTableCell sx={{ paddingLeft: row.parent ? row.parent * 1.5 : 0 }}>
+      <RowTableCell sx={{ paddingLeft: level <= 1 ? 0 : level * 2 - 1.3 }}>
         {type === 'level' ? (
           parent === null ? (
             <Box sx={{ marginLeft: 1 }}>
@@ -71,13 +78,13 @@ const EditRow: React.FC<IEditRowProps> = ({
             </Box>
           )
         ) : (
-          <Box sx={{ paddingLeft: '38px' }}>
+          <Box sx={{ paddingLeft: '30px' }}>
             <img src={calcIcon} alt='' />
           </Box>
         )}
       </RowTableCell>
       <TableCell>
-        <TextField
+        <RowTextField
           fullWidth
           name='title'
           size='small'
@@ -87,8 +94,8 @@ const EditRow: React.FC<IEditRowProps> = ({
         />
       </TableCell>
       <RowTableCell>
-        {row.type === 'row' && (
-          <TextField
+        {type === 'row' && (
+          <RowTextField
             fullWidth
             name='unit'
             size='small'
@@ -100,8 +107,8 @@ const EditRow: React.FC<IEditRowProps> = ({
         )}
       </RowTableCell>
       <TableCell>
-        {row.type === 'row' && (
-          <TextField
+        {type === 'row' && (
+          <RowTextField
             fullWidth
             name='quantity'
             size='small'
@@ -114,8 +121,8 @@ const EditRow: React.FC<IEditRowProps> = ({
         )}
       </TableCell>
       <RowTableCell>
-        {row.type === 'row' && (
-          <TextField
+        {type === 'row' && (
+          <RowTextField
             fullWidth
             name='unitPrice'
             size='small'
@@ -128,22 +135,12 @@ const EditRow: React.FC<IEditRowProps> = ({
         )}
       </RowTableCell>
       <RowTableCell>
-        {row.type === 'level' ? (
-          <Typography>{row.price}</Typography>
-        ) : (
-          <TextField
-            fullWidth
-            name='price'
-            size='small'
-            disabled
-            value={row.quantity * row.unitPrice}
-            onKeyDown={onKeyDown}
-            onChange={onChangeInput}
-          />
-        )}
+        <Typography>
+          {type === 'row' ? String(row.quantity * row.unitPrice) : 0}
+        </Typography>
       </RowTableCell>
     </TableRow>
   )
 }
 
-export default EditRow
+export default CreateRow

@@ -1,12 +1,12 @@
-import { TableRow, TextField, Box, Typography } from '@mui/material/'
+import { TableRow, Box, Typography } from '@mui/material/'
 
-import { RowTableCell } from '../../styles/shared'
+import { RowTableCell, RowTextField } from '../../styles/shared'
 
 import firstLevelIcon from '../../assets/svg/firstLevelIcon.svg'
 import secondLevelIcon from '../../assets/svg/secondLevelIcon.svg'
 import calcIcon from '../../assets/svg/calcIcon.svg'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { DEFAULT_ROW } from '../../constants'
 
@@ -16,12 +16,16 @@ interface IEditRowProps {
   type: NewRowData['type']
   rowFunc: (row: RowData) => void
   editRow?: RowData
+  setRowLevel: (parent: RowData['parent']) => void
+  level: number
 }
 const EditRow: React.FC<IEditRowProps> = ({
   id,
   parent = null,
   type,
   rowFunc,
+  setRowLevel,
+  level,
   ...props
 }) => {
   const [row, setRow] = useState<RowData>(
@@ -48,13 +52,18 @@ const EditRow: React.FC<IEditRowProps> = ({
     }
   }
 
+  useEffect(() => {
+    setRowLevel(parent)
+  }, [])
+
   const isDisibled = row.type === 'level'
 
   return (
-    <TableRow>
+    <TableRow sx={{ position: 'relative' }}>
       <RowTableCell
         sx={{
-          paddingLeft: row.parent ? row.parent * 1.5 : 0,
+          position: 'relative',
+          paddingLeft: level <= 1 ? 0 : level * 2 - 1.3,
         }}>
         {type === 'level' ? (
           parent === null ? (
@@ -70,13 +79,13 @@ const EditRow: React.FC<IEditRowProps> = ({
             </Box>
           )
         ) : (
-          <Box sx={{ paddingLeft: '38px' }}>
+          <Box sx={{ marginLeft: '30px' }}>
             <img src={calcIcon} alt='' />
           </Box>
         )}
       </RowTableCell>
       <RowTableCell>
-        <TextField
+        <RowTextField
           size='small'
           fullWidth
           name='title'
@@ -87,7 +96,7 @@ const EditRow: React.FC<IEditRowProps> = ({
       </RowTableCell>
       <RowTableCell>
         {row.type === 'row' && (
-          <TextField
+          <RowTextField
             size='small'
             fullWidth
             name='unit'
@@ -100,7 +109,7 @@ const EditRow: React.FC<IEditRowProps> = ({
       </RowTableCell>
       <RowTableCell>
         {row.type === 'row' && (
-          <TextField
+          <RowTextField
             size='small'
             fullWidth
             name='quantity'
@@ -114,7 +123,7 @@ const EditRow: React.FC<IEditRowProps> = ({
       </RowTableCell>
       <RowTableCell>
         {row.type === 'row' && (
-          <TextField
+          <RowTextField
             size='small'
             fullWidth
             name='unitPrice'
@@ -127,19 +136,7 @@ const EditRow: React.FC<IEditRowProps> = ({
         )}
       </RowTableCell>
       <RowTableCell>
-        {row.type === 'level' ? (
-          <Typography>{row.price}</Typography>
-        ) : (
-          <TextField
-            size='small'
-            fullWidth
-            name='price'
-            disabled
-            value={String(row.quantity * row.unitPrice)}
-            onKeyDown={onKeyDown}
-            onChange={onChangeInput}
-          />
-        )}
+        <Typography>{String(row.quantity * row.unitPrice)}</Typography>
       </RowTableCell>
     </TableRow>
   )

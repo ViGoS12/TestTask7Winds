@@ -1,29 +1,35 @@
 import {
   TableHead,
   TableContainer,
-  Table,
-  TableRow,
+  Table as MuiTable,
+  TableRow as MuiTableRow,
   TableBody,
 } from '@mui/material/'
 
-import { HeaderTableCell } from './../../styles/shared'
+import { HeaderTableCell } from '../../styles/shared'
 
-import EditRow from './../editRow/'
-import MyTableRow from '../myTableRow'
+import EditRow from '../editRow'
+import TableRow from '../tableRow'
 
 import { useState } from 'react'
 
 import { editOneRow, setNewRow } from '../../redux/slices/tableSlice'
 import { useDispatch } from 'react-redux'
+import { getLevel } from '../../utils/getLevel'
 
-interface IMyTableProps {
+interface ITableProps {
   tableData: RowData[]
 }
 
-const MyTable: React.FC<IMyTableProps> = ({ tableData }) => {
+const Table: React.FC<ITableProps> = ({ tableData }) => {
   const dispatch = useDispatch()
 
   const [rowIdForEdit, setRowIdForEdit] = useState<RowData['id'] | null>(null)
+  const [level, setLevel] = useState(0)
+
+  const setRowLevel = (parent: RowData['parent']) => {
+    setLevel(getLevel(parent, tableData))
+  }
 
   const selectRowIdForEdit = (id: RowData['id']) => {
     setRowIdForEdit(id)
@@ -38,10 +44,14 @@ const MyTable: React.FC<IMyTableProps> = ({ tableData }) => {
     dispatch(setNewRow(row))
   }
 
+  const getRowLevel = (parent: RowData['parent']) => {
+    return getLevel(parent, tableData)
+  }
+
   return (
     <TableContainer sx={{ height: '100vh' }}>
       <form>
-        <Table
+        <MuiTable
           aria-label='table'
           stickyHeader
           sx={{
@@ -61,20 +71,25 @@ const MyTable: React.FC<IMyTableProps> = ({ tableData }) => {
             },
           }}>
           <TableHead>
-            <TableRow>
+            <MuiTableRow>
               <HeaderTableCell width='6.5%'>Уровень</HeaderTableCell>
               <HeaderTableCell width='46%'>Наименование работ</HeaderTableCell>
               <HeaderTableCell width='12.5%'>Ед. изм.</HeaderTableCell>
               <HeaderTableCell width='12%'>Количество</HeaderTableCell>
               <HeaderTableCell width='12%'>Цена за ед.</HeaderTableCell>
               <HeaderTableCell>Стоимость</HeaderTableCell>
-            </TableRow>
+            </MuiTableRow>
           </TableHead>
           <TableBody>
             {!tableData.length ? (
-              <EditRow rowFunc={addNewRow} type={'level'} />
+              <EditRow
+                rowFunc={addNewRow}
+                type={'level'}
+                setRowLevel={setRowLevel}
+                level={level}
+              />
             ) : (
-              tableData.map((row) => {
+              tableData.map((row, i) => {
                 if (row.id === rowIdForEdit) {
                   return (
                     <EditRow
@@ -84,24 +99,28 @@ const MyTable: React.FC<IMyTableProps> = ({ tableData }) => {
                       parent={row.parent}
                       rowFunc={editRow}
                       editRow={row}
+                      setRowLevel={setRowLevel}
+                      level={level}
                     />
                   )
                 }
                 return (
-                  <MyTableRow
+                  <TableRow
+                    rowIndex={i}
                     key={row.id}
                     row={row}
                     selectRowIdForEdit={selectRowIdForEdit}
                     rowFunc={addNewRow}
+                    getRowLevel={getRowLevel}
                   />
                 )
               })
             )}
           </TableBody>
-        </Table>
+        </MuiTable>
       </form>
     </TableContainer>
   )
 }
 
-export default MyTable
+export default Table
