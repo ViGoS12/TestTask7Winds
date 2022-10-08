@@ -14,7 +14,6 @@ interface ITableRowProps {
   row: RowData
   selectRowIdForEdit: (id: RowData['id'], el: string) => void
   rowFunc: (row: NewRowData) => void
-  rowIndex: number
   getRowLevel: (parent: RowData['parent']) => number
 }
 
@@ -22,7 +21,6 @@ const TableRow: React.FC<ITableRowProps> = ({
   row,
   selectRowIdForEdit,
   rowFunc,
-  rowIndex,
   getRowLevel,
 }) => {
   const [onCreation, setOnCreation] = useState(false)
@@ -67,12 +65,12 @@ const TableRow: React.FC<ITableRowProps> = ({
             //   content: '""',
             //   position: 'absolute',
             //   bottom: '30px',
-            //   left: level > 1 ? level * 15 : 20,
-            //   width: rowIndex ? '15px' : 0,
+            //   left: level > 1 ? level * 20 : 20,
+            //   width: level ? '15px' : 0,
             //   borderBottom: '1px solid #C6C6C6',
             // },
           }}>
-          {/* {rowIndex ? <Line level={level === 0 ? 1 : 2} /> : ''} */}
+          {/* <Line level={level} /> */}
           {row.type === 'level' ? (
             row.parent !== null ? (
               <Box

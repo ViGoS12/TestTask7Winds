@@ -91,7 +91,7 @@ const Table: React.FC<ITableProps> = ({ tableData }) => {
                 level={level}
               />
             ) : (
-              tableData.map((row, i) => {
+              tableData.map((row) => {
                 if (row.id === rowIdForEdit) {
                   return (
                     <EditRow
@@ -108,7 +108,6 @@ const Table: React.FC<ITableProps> = ({ tableData }) => {
                 }
                 return (
                   <TableRow
-                    rowIndex={i}
                     key={row.id}
                     row={row}
                     selectRowIdForEdit={selectRowIdForEdit}

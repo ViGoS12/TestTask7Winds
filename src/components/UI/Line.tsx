@@ -5,8 +5,9 @@ interface ILineProps {
 }
 
 const Line: React.FC<ILineProps> = ({ level }) => {
+  console.log(Array(level).fill(null))
   return (
-    <div className={styles.lines}>
+    <>
       {Array(level)
         .fill(null)
         .map((_, index) => (
@@ -17,7 +18,7 @@ const Line: React.FC<ILineProps> = ({ level }) => {
               marginLeft: 20 * (index + 1),
             }}></div>
         ))}
-    </div>
+    </>
   )
 }
 
