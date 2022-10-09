@@ -63,7 +63,21 @@ const CreateRow: React.FC<IEditRowProps> = ({
 
   return (
     <TableRow>
-      <RowTableCell sx={{ paddingLeft: level <= 1 ? 0 : level * 2 - 1.3 }}>
+      <RowTableCell
+        sx={{
+          position: 'relative',
+          paddingLeft: level <= 1 ? 0 : level * 2 - 1.3,
+          '&:before': {
+            content: '""',
+            position: 'absolute',
+            bottom: '30px',
+            left: level > 1 ? level * 20 : 20,
+            width: level ? '15px' : 0,
+            borderBottom: '1px solid #C6C6C6',
+            borderLeft: '1px solid #C6C6C6',
+            height: '60px',
+          },
+        }}>
         {type === 'level' ? (
           parent === null ? (
             <Box sx={{ marginLeft: 1 }}>
