@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/TestTask7Winds/static/css/main.14110b03.css",
+    "main.js": "/TestTask7Winds/static/js/main.6076ed86.js",
+    "static/media/secondLevelIcon.svg": "/TestTask7Winds/static/media/secondLevelIcon.1f7ac723a25eeee3ac5ae79e1b3584f6.svg",
+    "static/media/firstLevelIcon.svg": "/TestTask7Winds/static/media/firstLevelIcon.a7e1c20309b319063289185629e8f712.svg",
+    "static/media/calcIcon.svg": "/TestTask7Winds/static/media/calcIcon.7f3986af8da4c7a2794562637834f348.svg",
+    "index.html": "/TestTask7Winds/index.html",
+    "main.14110b03.css.map": "/TestTask7Winds/static/css/main.14110b03.css.map",
+    "main.6076ed86.js.map": "/TestTask7Winds/static/js/main.6076ed86.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.14110b03.css",
+    "static/js/main.6076ed86.js"
+  ]
+}
