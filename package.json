@@ -2,6 +2,7 @@
   "name": "testtask7winds",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://vigos12.github.io/TestTask7Winds/",
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
@@ -16,6 +17,7 @@
     "@types/node": "^16.11.63",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
+    "gh-pages": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.4",
@@ -28,7 +30,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "gh-pages -d build",
+    "predeploy": "npm run build"
   },
   "eslintConfig": {
     "extends": [
